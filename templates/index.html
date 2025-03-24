@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Dashboard</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+        }
+    
+        .news-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px;
+    padding: 20px;
+}
+    
+       .news-card {
+    background: #1e1e2e; 
+    color: white;
+    padding: 20px;
+    border-radius: 12px; 
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2); 
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+    
+
+.news-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+
+.news-card p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.news-card a {
+    text-decoration: none;
+    color: #8ab4f8; 
+    font-weight: bold;
+}
+
+.news-card a:hover {
+    text-decoration: underline;
+}
+    
+        .form-container {
+            margin-bottom: 20px;
+        }
+    
+        input[type="text"] {
+            padding: 8px;
+            width: 250px;
+        }
+    
+        button {
+            padding: 8px 12px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    
+        button:hover {
+            background-color: darkblue;
+        }
+
+    .layout-3x2 { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); }
+    .layout-2x4 { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, auto); }
+    .layout-1x5 { grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(5, auto); }
+
+
+        body.dark-mode {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+    
+        .dark-mode .news-card {
+    background: #282a36;
+    color: #ffffff;
+}
+
+    
+        .dark-mode .news-card a {
+            color: lightblue;
+        }
+    
+        .dark-mode button {
+            background-color: #444;
+            color: white;
+        }
+    
+        .dark-mode button:hover {
+            background-color: #666;
+        }
+
+
+@media (max-width: 1024px) {
+    .news-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .news-container {
+        grid-template-columns: repeat(1, 1fr);
+    }
+} 
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a {
+    padding: 10px;
+    margin: 5px;
+    text-decoration: none;
+    background: blue;
+    color: white;
+    border-radius: 5px;
+}
+
+.pagination a:hover {
+    background: darkblue;
+}
+    </style>
+    
+</head>
+<body>
+        
+    <h1>📰 Morning Dashboard</h1>
+    <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button><br><br>
+    <form method="GET" action="/">
+        <label for="articles_per_page">Articles per page:</label>
+        <select name="articles_per_page" id="articles_per_page" onchange="this.form.submit()">
+            <option value="10" {% if articles_per_page == 10 %}selected{% endif %}>10</option>
+            <option value="15" {% if articles_per_page == 15 %}selected{% endif %}>15</option>
+        </select>
+    </form>
+    
+    <script>
+
+if (localStorage.getItem("darkMode") === "enabled") {
+            document.body.classList.add("dark-mode");
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            
+            // Save preference in localStorage
+            if (document.body.classList.contains("dark-mode")) {
+                localStorage.setItem("darkMode", "enabled");
+            } else {
+                localStorage.removeItem("darkMode");
+            }
+        }
+
+    </script>
+    
+
+     <br><br>
+    <div class="form-container">
+        <form method="POST">
+            <input type="text" name="feed_name" placeholder="Enter Feed Name" required>
+            <input type="text" name="rss_url" placeholder="Enter RSS Feed URL" required>
+            <button type="submit">Add Feed</button>
+        </form>
+    </div>    
+    
+
+    <div class="news-container layout-3x2">
+        {% for article in news %}
+            <div class="news-card">
+                <h3>{{ article.title }}</h3>
+                <p><strong>Source:</strong> {{ article.source }}</p>
+                <a href="{{ article.link }}" target="_blank">Read More</a>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        {% if page > 1 %}
+            <a href="?page={{ page-1 }}&articles_per_page={{ articles_per_page }}">Previous</a>
+        {% endif %}
+
+        Page {{ page }} of {{ total_pages }}
+
+        {% if page < total_pages %}
+            <a href="?page={{ page+1 }}&articles_per_page={{ articles_per_page }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
