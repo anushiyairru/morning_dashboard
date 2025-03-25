@@ -1,4 +1,6 @@
 RSS_FEEDS = {
     "ESPN": "https://www.espn.com/espn/rss/news",
     "Bloomberg": "https://www.bloomberg.com/feeds/bbizmarkets.xml",
+    "TechCrunch": "http://feeds.feedburner.com/TechCrunch/",
+    "Forbes": "https://www.forbes.com/investing/feed/",
 }
